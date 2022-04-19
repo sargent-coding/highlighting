@@ -1,0 +1,125 @@
+* {
+  /* Normal Colours */
+  --red: #f45;
+  --orange: #fa3;
+  --yellow: #fc0;
+  --green: #0c6;
+  --cyan: #2bf;
+  --blue: #26f;
+  --purple: #75e;
+  --pink: #f69;
+  --brown: #b80;
+
+  /* Greyscale */
+  --grey-1: #f5f5f5;
+  --grey-2: #d7d7d7;
+  --grey-3: #afafaf;
+  --grey-4: #696969;
+  --grey-5: #414141;
+  --grey-6: #161616;
+}
+
+#editor {
+  width: 500px;
+  height: 400px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--grey-6);
+  font-family: courier; 
+  text-size: 20px;
+  background-color: var(--grey-6);
+  padding: 10px;
+  margin: 0;
+  caret-color: var(--grey-1);
+  border: none;
+  white-space: pre;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#editor::selection {
+  color: transparent;
+  background-color: blue;
+}
+
+#hl-layer {
+  width: 500px;
+  height: 400px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--grey-1);
+  padding: 10px;
+  font-family: courier;
+  text-size: 20px;
+  margin: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.comment {
+  color: var(--grey-4);
+}
+
+.keyword {
+  color: var(--pink);
+}
+
+.string {
+  color: var(--green);
+}
+
+.digit {
+  color: var(--purple);
+}
+
+.booleans {
+  color: var(--green);
+}
+
+.function {
+  color: var(--cyan);
+}
+
+.attribute {
+  color: var(--orange);
+}
+
+.heading {
+  color: var(--pink);
+}
+
+.italic {
+  font-style: italic;
+  color: var(--green);
+}
+
+.bold {
+  font-weight: bold;
+  color: var(--purple);
+}
+
+.bolditalic {
+  font-weight: bold;
+  font-style: italic;
+  color: var(--brown);
+}
+
+.name {
+  color: var(--orange);
+}
+
+.url {
+  font-style: italic;
+  color: var(--blue);
+}
+
+.table {
+  color: var(--cyan);
+}
+
+.error {
+  text-decoration: 2px underline red;
+  text-underline-offset: 5px;
+}
