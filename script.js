@@ -11,6 +11,7 @@ async function dict() {
   let words = await fetch(`https://raw.githubusercontent.com/wooorm/dictionaries/main/dictionaries/en-GB/index.dic`)
     .then(response => response.text());
   dictionary = new Typo("en_GB", aff, words);
+  updateHL();
 }
 
 dict();
