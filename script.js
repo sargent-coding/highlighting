@@ -109,7 +109,7 @@ class Highlighter {
       let k = kwKeys[i];
       let peek = this.chars.slice(this.ptr, this.ptr + k.length).join("");
       // If keywords match up, and there is a hard boundary ending the keyword, add it to result and skip it
-      if (peek === k && !isAlpha(this.chars[this.ptr + k.length])) {
+      if (peek === k && !isAlpha(this.chars[this.ptr + k.length]) && !isAlpha(this.chars[this.ptr - 1])) {
         found = true;
         this.ptr += k.length - 1;
         this.result.push(new Token(k, this.keywords[k], 0, 0));
@@ -133,7 +133,8 @@ class Highlighter {
         for (; !hitEndSeq && this.ptr < this.chars.length; this.ptr++) {
           // Check for end token
           let peek = this.chars.slice(this.ptr, this.ptr + end.length).join("");
-          if (peek === end && !(escape && this.chars[this.ptr - 1] === "\\")) {
+          let isEscaped = this.chars[this.ptr - 1] === "\\" && this.chars[this.ptr - 2] !== "\\";
+          if (peek === end && !(escape && isEscaped)) {
             this.ptr += end.length - 1;
             text += end;
             break;
@@ -336,22 +337,31 @@ function javascript() {
   // Set up a highlighter (spellcheck strings and comments)
   let highlighter = new Highlighter(["string", "comment"]);
   // Use javascript keywords
-  highlighter.addKeywords(["return", "function", "break", "while", "var", "let", "const"], "keyword");
+  highlighter.addKeywords([
+    "async", "await", "break", "case", "catch", "class", "const", "continue", 
+    "debugger", "default", "delete", "do", "else", "enum", "export", "extends", 
+    "finally", "for", "function", "if", "implements", "import", "in", 
+    "instanceof", "interface", "let", "new", "null", "package", "private", 
+    "protected", "public", "return", "super", "switch", "static", "this", 
+    "throw", "try", "typeof", "var", "void", "while", "with", "yield"], "keyword");
   // Booleans
   highlighter.addKeywords(["true", "false"], "booleans");
   // Functions
-  highlighter.addRegex(/([a-z]+)\(/g, "function");
+  highlighter.addRegex(/([a-zA-Z][a-zA-Z0-9]*)\(/g, "function");
   // Attributes
-  highlighter.addRegex(/\.([a-z]+)/g, "attribute");
+  highlighter.addRegex(/\.([a-zA-Z][a-zA-Z0-9]*)/g, "attribute");
   // JS digits (janky as fuck)
   highlighter.addKeywords(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], "digit");
   // Implement strings (start with ", end with ")
   highlighter.addBounded("\"", "\"", "string", true);
+  highlighter.addBounded("'", "'", "string", true);
   highlighter.addBounded("`", "`", "string", true, "${", "}");
   // Implement single line comments (start with //, end with newline)
   highlighter.addBounded("//", "\n", "comment", false);
   // Implement multi line comments (start with /*, end with */)
   highlighter.addBounded("/*", "*/", "comment", false);
+  // Regex
+  highlighter.addBounded("/", "/", "regex", true);
   // Return highlighter
   return highlighter;
 }
@@ -390,5 +400,11 @@ function updateHL() {
   hlLayer.innerHTML = h;
 }
 
+function syncScroll() {
+  byId('hl-layer').scrollTop = byId('editor').scrollTop = this.scrollTop; 
+  byId('hl-layer').scrollLeft = byId('editor').scrollLeft = this.scrollLeft;
+}
+
 textarea.addEventListener("input", updateHL);
-updateHL()
+textarea.addEventListener("scroll", syncScroll);
+updateHL();

@@ -42,3 +42,7 @@ const bareWord = (word) => {
     .replace(leading, "")
     .replace(trailing, "");
 }
+
+const byId = (name) => {
+  return document.getElementById(name);
+}
